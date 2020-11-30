@@ -21,6 +21,7 @@ class Textures{
     public:
 
     void drawMario(int , int );
+    void drawGoomba(int, int);
     void drawWaluigi(int , int );
     void drawBaseWall(int , int );
     void drawBrick(int , int );

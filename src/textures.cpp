@@ -48,6 +48,22 @@ void Textures::drawWaluigi(int x, int y){
     glEnd();
 }
 
+void Textures::drawGoomba(int x, int y){
+
+    glBindTexture(GL_TEXTURE_2D, this->loadTexture("../media/bmps/enemy.bmp"));
+    glBegin(GL_QUADS);
+        glTexCoord2f(0.0,1.0);
+        glVertex3f(x,y+128,0.0);
+        glTexCoord2f(0.0,0.0);
+        glVertex3f(x,y+128+64,0.0);
+        glTexCoord2f(1.0,0.0);
+        glVertex3f(x+64,y+128+64,0.0);
+        glTexCoord2f(1.0,1.0);
+        glVertex3f(x+64,y+128,0.0);
+    glEnd();
+}
+
+
 void Textures::drawBaseWall(int x, int y)
 {
     glBindTexture(GL_TEXTURE_2D, this->loadTexture("../media/bmps/newbase.bmp"));
