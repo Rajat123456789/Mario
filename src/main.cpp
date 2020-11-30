@@ -27,6 +27,7 @@ void createLevel(){
         // level1->baseWall[i] = (i%7);
         level1->baseWall[i] = 1;
         level1->pipe[i] = (i%5==0);
+        level1->cloud[i]=1;
         if(level1->pipe[i-1]==1 && ((i-1)%5==0))
             level1->pipe[i]=1;
     }
@@ -34,13 +35,13 @@ void createLevel(){
 }
 
 void moveBack(){
-    if(level1->pipe[(mario->mariox)/64]==0 && mario->base && level1->pipe[(waluigi->mariox)/64]==0 && waluigi->base)
+    if((level1->pipe[(mario->mariox)/64]==0 && mario->base) && (level1->pipe[(waluigi->mariox)/64]==0 && waluigi->base))
         direction[3]=1;
     if(level1->pipe[(mario->mariox-1)/64] && level1->pipe[(waluigi->mariox-1)/64]){
         if(mario->marioy/64>=3) {
 
             mario->mariox-=8;
-waluigi->mariox-=8;
+            waluigi->mariox-=8;
         }
         else
             mario->mariox=mario->mariox;
@@ -48,20 +49,20 @@ waluigi->mariox-=8;
     else if(level1->baseWall[(mario->mariox+31)/64] && level1->baseWall[(waluigi->mariox+31)/64]){
 
         mario->mariox-=8;
-waluigi->mariox-=8;
+        waluigi->mariox-=8;
     }
     else
         die();
 }
 
 void moveFront(){
-    if(level1->pipe[(mario->mariox)/64]==0 && mario->base && level1->pipe[(waluigi->mariox)/64]==0 && waluigi->base)
+    if((level1->pipe[(mario->mariox)/64]==0 && mario->base) && (level1->pipe[(waluigi->mariox)/64]==0 && waluigi->base))
         direction[3]=1;
     if(level1->pipe[(mario->mariox+65)/64] && level1->pipe[(waluigi->mariox+65)/64]){
         if(mario->marioy/64>=3){
 
             mario->mariox+=8;
-waluigi->mariox+=8;
+            waluigi->mariox+=8;
         }
         else
             mario->mariox=mario->mariox;
@@ -69,12 +70,12 @@ waluigi->mariox+=8;
     else if(level1->baseWall[(mario->mariox+33)/64] && level1->baseWall[(waluigi->mariox+33)/64]){
 
         mario->mariox+=8;
-waluigi->mariox+=8;
+        waluigi->mariox+=8;
     }
     else if(mario->marioy && waluigi->marioy){
 
         mario->mariox+=8;
-waluigi->mariox+=8;
+        waluigi->mariox+=8;
     }
     else
         die();
@@ -85,10 +86,10 @@ void moveUp(){
         jumpFlag=mario->marioy+224;
         up=1;
     }
-    if(jumpFlag && (mario->marioy<=jumpFlag) && up && jumpFlag && (waluigi->marioy<=jumpFlag) && up){
+    if((jumpFlag && (mario->marioy<=jumpFlag) && up) && (jumpFlag && (waluigi->marioy<=jumpFlag) && up)){
 
         mario->marioy+=8;
-waluigi->marioy+=8;
+        // waluigi->marioy+=8;
     }
     else
         up=0;
@@ -98,7 +99,7 @@ waluigi->marioy+=8;
             mario->base=1;
             if(mario->marioy>=188)
                 mario->marioy-=8;
-waluigi->marioy-=8;
+                // waluigi->marioy-=8;
             if(mario->marioy==192){
                 direction[2]=0;
                 jumpFlag=0;
@@ -106,10 +107,10 @@ waluigi->marioy-=8;
         }
         else if(!(level1->pipe[(mario->mariox+64)/64]) || !(level1->pipe[(mario->mariox+4)/64]) ){
             mario->base=0;
-waluigi->base=0;
+            waluigi->base=0;
             if(mario->marioy>=4)
                 mario->marioy-=8;
-waluigi->marioy-=8;
+                // waluigi->marioy-=8;
             if(mario->marioy==0){
                 direction[2]=0;
                 jumpFlag=0;
@@ -119,15 +120,15 @@ waluigi->marioy-=8;
 }
 
 void moveDown(){
-    if(level1->pipe[(mario->mariox)/64]==0 && level1->pipe[(mario->mariox+64)/64]==0 && level1->pipe[(waluigi->mariox)/64]==0 && level1->pipe[(waluigi->mariox+64)/64]==0){
+    if((level1->pipe[(mario->mariox)/64]==0 && level1->pipe[(mario->mariox+64)/64]==0) && (level1->pipe[(waluigi->mariox)/64]==0 && level1->pipe[(waluigi->mariox+64)/64]==0)){
         if(mario->marioy>0){
 
             mario->marioy-=8;
-waluigi->marioy-=8;
+            // waluigi->marioy-=8;
         }
         else{
             mario->base=0;
-waluigi->base=0;
+            // waluigi->base=0;
             direction[3]=0;
         }
     }
@@ -147,15 +148,28 @@ void display()
 {
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     GLint startx=0,starty=0;
-
+    int j=1;
+    int y1=0;
     // cout<<mario->marioy/64<<endl;
     for(int i=0;i<MAX;i++)
     {
         if(level1->baseWall[i])
             texture->drawBaseWall(startx, starty);
+        if(level1->cloud[i] && (i%3==0))
+            if(j%2==0){ 
+                y1+=64;
+                texture->drawCloud(startx,y1);
+            }
+            else
+                {texture->drawCloud(startx,starty);
+                }
+            j++;
+           
         if(level1->pipe[i] && (i%5==0))
             texture->drawPipe(startx, starty);
         startx+=64;
+        y1=0;
+
     }
 
     glPushMatrix();
@@ -171,7 +185,7 @@ int main(int argc, char** argv)
     mario->mariox=0;
     mario->marioy=0;
     mario->base=0;
-waluigi->base=0;
+    waluigi->base=0;
 
     waluigi->mariox=0;
     waluigi->marioy=0;

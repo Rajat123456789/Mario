@@ -95,13 +95,13 @@ void Textures::drawCloud(int x, int y){
     glBindTexture(GL_TEXTURE_2D, this->loadTexture("../media/bmps/cloud.bmp"));
     glBegin(GL_QUADS);
         glTexCoord2f(0.0,1.0);
-        glVertex3f(x,y+320,0.0);
+        glVertex3f(x,y+600,0.0);
         glTexCoord2f(0.0,0.0);
-        glVertex3f(x,y+64+320,0.0);
+        glVertex3f(x,y+64+600,0.0);
         glTexCoord2f(1.0,0.0);
-        glVertex3f(x+64,y+64+320,0.0);
+        glVertex3f(x+64,y+64+600,0.0);
         glTexCoord2f(1.0,1.0);
-        glVertex3f(x+64,y+320,0.0);
+        glVertex3f(x+64,y+600,0.0);
     glEnd();
 }
 
@@ -161,3 +161,4 @@ void Textures::drawEnemy(int x, int y){
         glVertex3f(x+64,y+128,0.0);
     glEnd();
 }
+

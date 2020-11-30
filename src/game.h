@@ -12,6 +12,7 @@ class Level{
     public:
         int baseWall[22];
         int pipe[22];
+        int cloud[22];
 };
 
 class Mario{

@@ -30,6 +30,7 @@ class Textures{
     void drawHill(int , int );
     void drawPipe(int , int );
     void drawEnemy(int , int );
+    
 };
 
 #endif /* !__TEXTURES_H__ */
