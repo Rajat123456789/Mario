@@ -13,6 +13,7 @@ class Level{
         int baseWall[22];
         int pipe[22];
         int cloud[22];
+        int bush[22];
 };
 
 class Mario{

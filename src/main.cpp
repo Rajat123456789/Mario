@@ -28,6 +28,7 @@ void createLevel(){
         level1->baseWall[i] = 1;
         level1->pipe[i] = (i%5==0);
         level1->cloud[i]=1;
+        level1->bush[i]=1;
         if(level1->pipe[i-1]==1 && ((i-1)%5==0))
             level1->pipe[i]=1;
     }
@@ -164,7 +165,8 @@ void display()
                 {texture->drawCloud(startx,starty);
                 }
             j++;
-           
+        if(level1->bush[i] && (i%4==0))
+            texture->drawBush(startx, starty);   
         if(level1->pipe[i] && (i%5==0))
             texture->drawPipe(startx, starty);
         startx+=64;
