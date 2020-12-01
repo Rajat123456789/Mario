@@ -12,12 +12,12 @@ using namespace std;
 
 Textures *texture = new Textures();
 Level *level1 = new Level(); 
-Mario *mario = new Mario();
-Mario *waluigi = new Mario();
-Mario *goomba = new Mario();
 
 int jumpFlag=0,up=0,down;
+int jumpFlag2=0,up2=0,down2;
 bool direction[4] = {0,0,0,0};
+bool direction2[4] = {0,0,0,0};
+int direction_goomba = 1;
 
 void die(){
     exit(1);
@@ -36,92 +36,74 @@ void createLevel(){
     level1->pipe[0]=0;
 }
 
-void moveBack(){
+void moveBack(Mario* mario){
    
    
-    if((level1->pipe[(mario->mariox)/64]==0 && mario->base) && (level1->pipe[(waluigi->mariox)/64]==0 && waluigi->base) 
-                                                && (level1->pipe[(goomba->mariox)/128]==0 && goomba->base))
+    if(level1->pipe[(mario->mariox)/64]==0 && mario->base)
         direction[3]=1;
    
    
-    if(level1->pipe[(mario->mariox-1)/64] && level1->pipe[(waluigi->mariox-1)/64]  
-                                                        && level1->pipe[(goomba->mariox-1)/128] ){
+    if(level1->pipe[(mario->mariox-1)/64]){
         if(mario->marioy/64>=3) {
 
             mario->mariox-=8;
-            waluigi->mariox-=8;
-            goomba->mariox-=4;
         }
         else
             mario->mariox=mario->mariox;
     }
-    else if(level1->baseWall[(mario->mariox+31)/64] && level1->baseWall[(waluigi->mariox+31)/64]  
-                                                 && level1->baseWall[(goomba->mariox+127)/128])
+    else if(level1->baseWall[(mario->mariox+31)/64])
                                                  {
 
         mario->mariox-=8;
-        waluigi->mariox-=8;
-        goomba->mariox-=4;
         
     }
     else
         die();
 }
 
-void moveFront(){
-    if((level1->pipe[(mario->mariox)/64]==0 && mario->base) && (level1->pipe[(waluigi->mariox)/64]==0 && waluigi->base)
-                                                && (level1->pipe[(goomba->mariox)/128]==0 && goomba->base))
+void moveFront(Mario* mario){
+    if(level1->pipe[(mario->mariox)/64]==0 && mario->base)
         direction[3]=1;
 
 
-    if(level1->pipe[(mario->mariox+65)/64] && level1->pipe[(waluigi->mariox+65)/64]
-                                                &&   level1->pipe[(goomba->mariox+129)/128]){
+    if(level1->pipe[(mario->mariox+65)/64]){
         if(mario->marioy/64>=3){
 
             mario->mariox+=8;
-            waluigi->mariox+=8;
-            goomba->mariox+=4;
         }
         else
             mario->mariox=mario->mariox;
     }
-    else if(level1->baseWall[(mario->mariox+33)/64] && level1->baseWall[(waluigi->mariox+33)/64] 
-                                            && level1->baseWall[(goomba->mariox+127)/128])
+    else if(level1->baseWall[(mario->mariox+33)/64])
                                             {
 
         mario->mariox+=8;
-        waluigi->mariox+=8;
-        goomba->mariox+=4;
     }
-    else if(mario->marioy && waluigi->marioy && goomba->marioy){
+    else if(mario->marioy){
 
         mario->mariox+=8;
-        goomba->mariox+=4;
-        waluigi->mariox+=8;
     }
     else
         die();
 }
 
-void moveUp(){
+void moveUp(Mario* mario){
     if(!jumpFlag){
         jumpFlag=mario->marioy+224;
         up=1;
     }
-    if((jumpFlag && (mario->marioy<=jumpFlag) && up) && (jumpFlag && (waluigi->marioy<=jumpFlag) && up)){
+    if(jumpFlag && (mario->marioy<=jumpFlag) && up){
 
         mario->marioy+=8;
-        // waluigi->marioy+=8;
     }
     else
         up=0;
     if(!up)
     {
-        if(level1->pipe[(mario->mariox+64)/64] || level1->pipe[(mario->mariox+4)/64] && (level1->pipe[(waluigi->mariox+64)/64] || level1->pipe[(waluigi->mariox+4)/64])){
+        if(level1->pipe[(mario->mariox+64)/64] || level1->pipe[(mario->mariox+4)/64]){
             mario->base=1;
             if(mario->marioy>=188)
                 mario->marioy-=8;
-                // waluigi->marioy-=8;
             if(mario->marioy==192){
                 direction[2]=0;
                 jumpFlag=0;
@@ -129,29 +111,57 @@ void moveUp(){
         }
         else if(!(level1->pipe[(mario->mariox+64)/64]) || !(level1->pipe[(mario->mariox+4)/64]) ){
             mario->base=0;
-            waluigi->base=0;
             if(mario->marioy>=4)
                 mario->marioy-=8;
-                // waluigi->marioy-=8;
             if(mario->marioy==0){
                 direction[2]=0;
                 jumpFlag=0;
             }
         }
     }
+
+    if(!jumpFlag2){
+        jumpFlag2=mario->marioy+224;
+        up2=1;
+    }
+    if(jumpFlag2 && (mario->marioy<=jumpFlag2) && up2){
+
+        mario->marioy+=8;
+    }
+    else
+        up2=0;
+    if(!up2)
+    {
+        if(level1->pipe[(mario->mariox+64)/64] || level1->pipe[(mario->mariox+4)/64]){
+            mario->base=1;
+            if(mario->marioy>=188)
+                mario->marioy-=8;
+            if(mario->marioy==192){
+                direction2[2]=0;
+                jumpFlag2=0;
+            }
+        }
+        else if(!(level1->pipe[(mario->mariox+64)/64]) || !(level1->pipe[(mario->mariox+4)/64]) ){
+            mario->base=0;
+            if(mario->marioy>=4)
+                mario->marioy-=8;
+            if(mario->marioy==0){
+                direction2[2]=0;
+                jumpFlag2=0;
+            }
+        }
+    }
 }
 
-void moveDown(){
-    if((level1->pipe[(mario->mariox)/64]==0 && level1->pipe[(mario->mariox+64)/64]==0) && (level1->pipe[(waluigi->mariox)/64]==0 && level1->pipe[(waluigi->mariox+64)/64]==0)){
+void moveDown(Mario* mario){
+    if(level1->pipe[(mario->mariox)/64]==0 && level1->pipe[(mario->mariox+64)/64]==0){
         if(mario->marioy>0){
-
             mario->marioy-=8;
-            // waluigi->marioy-=8;
         }
         else{
             mario->base=0;
-            // waluigi->base=0;
             direction[3]=0;
+            direction2[3] = 0;
         }
     }
 }
@@ -166,7 +176,7 @@ void init()
     glEnable(GL_TEXTURE_2D);
 }
 
-void display()
+void display(Mario* mario, Mario* waluigi, Mario* goomba)
 {
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     GLint startx=0,starty=0;
@@ -198,8 +208,14 @@ void display()
     glPushMatrix();
         glTranslatef(mario->mariox,mario->marioy,0);
         texture->drawMario(0, 0);
+            glPopMatrix();
+    glPushMatrix();
+
         glTranslatef(waluigi->mariox,waluigi->marioy,0);
         texture->drawWaluigi(0, 0);
+            glPopMatrix();
+    glPushMatrix();
+
         glTranslatef(goomba->mariox,goomba->marioy,0);
         texture->drawGoomba(0,0);
         // texture->draw(0, 0);
@@ -209,17 +225,21 @@ void display()
 
 int main(int argc, char** argv)
 {
+
+    Mario *mario = new Mario();
+    Mario *waluigi = new Mario();
+    Mario *goomba = new Mario();
+
     mario->mariox=0;
     mario->marioy=0;
     mario->base=0;
-    waluigi->base=0;
 
     waluigi->mariox=0;
     waluigi->marioy=0;
     waluigi->base=0;
 
-    goomba->mariox=500;
-    goomba->marioy=50;
+    goomba->mariox=440;
+    goomba->marioy=00;
     goomba->base=0;
 
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -262,6 +282,20 @@ int main(int argc, char** argv)
                             // if(direction[2]==0)
                             direction[3]=1;
                             break;
+                        case SDLK_a:
+                            direction2[0]=1;
+                            break;
+                        case SDLK_d:
+                            direction2[1]=1;
+                            break;
+                        case SDLK_w:
+                            // jumpFlag=0;
+                            direction2[2]=1;
+                            break;
+                        case SDLK_s:
+                            // if(direction[2]==0)
+                            direction2[3]=1;
+                            break;
                     }
                     break;
                 case SDL_KEYUP:
@@ -281,26 +315,69 @@ int main(int argc, char** argv)
                             // if(jumpFlag==1)
                             direction[3]=0;
                             break;
+                        case SDLK_a:
+                            direction2[0]=0;
+                            break;
+                        case SDLK_d:
+                            direction2[1]=0;
+                            break;
+                        case SDLK_w:
+                            // direction[2]=0;
+                            // jumpFlag=0;
+                            break;
+                        case SDLK_s:
+                            // if(jumpFlag==1)
+                            direction2[3]=0;
+                            break;
                     }
                     break; 
             }
         }
 
         if(direction[0])
-            moveBack();
-        // mariox-=5;
+            moveBack(mario);
 
         if(direction[1])
-            moveFront();
-        // mariox+=5;
+            moveFront(mario);
 
         if(direction[2])
-            moveUp();
+            moveUp(mario);
 
         if(direction[3])
-            moveDown();
+            moveDown(mario);
 
-        display();
+        if(direction2[0])
+            moveBack(waluigi);
+
+        if(direction2[1])
+            moveFront(waluigi);
+
+        if(direction2[2])
+            moveUp(waluigi);
+
+        if(direction2[3])
+            moveDown(waluigi);
+
+        if(level1->pipe[(goomba->mariox+65)/64]){
+            if(goomba->marioy/64>=3){
+                direction_goomba = 1;
+            }
+            else
+                direction_goomba = -1;
+        }
+
+        if(level1->pipe[(goomba->mariox-1)/64]){
+            if(goomba->marioy/64>=3) {
+
+                direction_goomba = -1;
+            }
+            else
+                direction_goomba = 1;
+        }
+
+        goomba->mariox += direction_goomba * 8;
+
+        display(mario, waluigi, goomba);
         SDL_GL_SwapBuffers();
         // angle += 0.9;
         // if(angle > 360)
